@@ -20,7 +20,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, PageTitle }) => {
 
                 <div className="px-4">
                     <ErrorBoundary>
-                        <Toaster position="top-right" richColors />
+                        <Toaster
+                            position="top-right"
+                            expand={true}
+                            richColors
+                            closeButton
+                        />
                         {/* <EmailNotVerified /> */}
                         {children}
                     </ErrorBoundary>

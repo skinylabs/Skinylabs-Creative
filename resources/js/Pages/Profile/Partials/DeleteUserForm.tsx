@@ -1,11 +1,10 @@
 import { useRef, useState, FormEventHandler } from "react";
-import DangerButton from "@/Components/DangerButton";
 import InputError from "@/Components/ui/InputError";
-import InputLabel from "@/Components/ui/Label";
 import Modal from "@/Components/Modal";
-import SecondaryButton from "@/Components/SecondaryButton";
-import TextInput from "@/Components/ui/TextInput";
 import { useForm } from "@inertiajs/react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Input from "@/Components/ui/Input";
+import Label from "@/Components/ui/Label";
 
 export default function DeleteUserForm({
     className = "",
@@ -61,10 +60,15 @@ export default function DeleteUserForm({
                     retain.
                 </p>
             </header>
-
-            <DangerButton onClick={confirmUserDeletion}>
+            <Button
+                className={`${buttonVariants({
+                    variant: "destructive",
+                })} ms-4`}
+                onClick={confirmUserDeletion}
+                disabled={processing}
+            >
                 Delete Account
-            </DangerButton>
+            </Button>
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
@@ -80,13 +84,13 @@ export default function DeleteUserForm({
                     </p>
 
                     <div className="mt-6">
-                        <InputLabel
+                        <Label
                             htmlFor="password"
                             value="Password"
                             className="sr-only"
                         />
 
-                        <TextInput
+                        <Input
                             id="password"
                             type="password"
                             name="password"
@@ -107,13 +111,23 @@ export default function DeleteUserForm({
                     </div>
 
                     <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>
+                        <Button
+                            className={`${buttonVariants({
+                                variant: "secondary",
+                            })} ms-4`}
+                            onClick={closeModal}
+                            disabled={processing}
+                        >
                             Cancel
-                        </SecondaryButton>
-
-                        <DangerButton className="ms-3" disabled={processing}>
+                        </Button>
+                        <Button
+                            className={`${buttonVariants({
+                                variant: "destructive",
+                            })} ms-3`}
+                            disabled={processing}
+                        >
                             Delete Account
-                        </DangerButton>
+                        </Button>
                     </div>
                 </form>
             </Modal>

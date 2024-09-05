@@ -1,11 +1,12 @@
 import InputError from "@/Components/ui/InputError";
-import InputLabel from "@/Components/ui/Label";
-import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/ui/TextInput";
+
 import { Link, useForm, usePage } from "@inertiajs/react";
-import { Transition } from "@headlessui/react";
+
 import { FormEventHandler } from "react";
 import { PageProps } from "@/types";
+import Label from "@/Components/ui/Label";
+import Input from "@/Components/ui/Input";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -44,9 +45,9 @@ export default function UpdateProfileInformation({
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <Label htmlFor="name" value="Name" />
 
-                    <TextInput
+                    <Input
                         id="name"
                         className="mt-1 block w-full"
                         value={data.name}
@@ -60,9 +61,9 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <Label htmlFor="email" value="Email" />
 
-                    <TextInput
+                    <Input
                         id="email"
                         type="email"
                         className="mt-1 block w-full"
@@ -99,17 +100,14 @@ export default function UpdateProfileInformation({
                 )}
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
-
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
+                    <Button
+                        className={`${buttonVariants({
+                            variant: "default",
+                        })} ms-4`}
+                        disabled={processing}
                     >
-                        <p className="text-sm text-gray-600">Saved.</p>
-                    </Transition>
+                        Save
+                    </Button>
                 </div>
             </form>
         </section>

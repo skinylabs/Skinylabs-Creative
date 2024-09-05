@@ -47,10 +47,6 @@ class CategoryController extends Controller
         $data['updated_by'] = Auth::id();
 
         Category::create($data);
-
-        return redirect()->route('categories.index')->with('flash', [
-            'success' => 'Category created successfully!',
-        ]);
     }
 
     /**
@@ -96,7 +92,7 @@ class CategoryController extends Controller
         // if ($category->image_path) {
         //     Storage::disk('public')->deleteDirectory(dirname($category->image_path));
         // }
-        return to_route('categories.index')
-            ->with('success', "Project Category \"$name\" was deleted");
+        // return to_route('categories.index')
+        //     ->with('success', "Project Category \"$name\" was deleted");
     }
 }

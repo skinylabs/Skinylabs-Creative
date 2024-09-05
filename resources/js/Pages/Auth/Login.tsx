@@ -1,11 +1,12 @@
 import { FormEventHandler } from "react";
 import Checkbox from "@/Components/Checkbox";
 import GuestLayout from "@/Layouts/GuestLayout";
-import InputError from "@/Components/ui/InputError";
-import InputLabel from "@/Components/ui/Label";
-import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/ui/TextInput";
+
 import { Head, Link, useForm } from "@inertiajs/react";
+import Label from "@/Components/ui/Label";
+import Input from "@/Components/ui/Input";
+import InputError from "@/Components/ui/InputError";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function Login({
     status,
@@ -40,9 +41,9 @@ export default function Login({
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <Label htmlFor="email" value="Email" />
 
-                    <TextInput
+                    <Input
                         id="email"
                         type="email"
                         name="email"
@@ -57,9 +58,9 @@ export default function Login({
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <Label htmlFor="password" value="Password" />
 
-                    <TextInput
+                    <Input
                         id="password"
                         type="password"
                         name="password"
@@ -97,9 +98,14 @@ export default function Login({
                         </Link>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    <Button
+                        className={`${buttonVariants({
+                            variant: "default",
+                        })} ms-4`}
+                        disabled={processing}
+                    >
+                        Login
+                    </Button>
                 </div>
             </form>
         </GuestLayout>
