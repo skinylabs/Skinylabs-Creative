@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PageProps } from "@/types";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { X } from "lucide-react";
 
 function EmailNotVerified() {
@@ -17,12 +17,12 @@ function EmailNotVerified() {
                 <div className="bg-red-600 text-white font-semibold flex items-center justify-between p-2 rounded-lg">
                     <span>
                         Email Anda belum diverifikasi. Klik{" "}
-                        <a
+                        <Link
                             href="/email/verify"
                             className="underline hover:text-red-300"
                         >
                             di sini{" "}
-                        </a>
+                        </Link>
                         untuk memverifikasi email Anda.
                     </span>
                     <button

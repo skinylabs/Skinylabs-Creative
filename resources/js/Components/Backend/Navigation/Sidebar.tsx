@@ -46,54 +46,34 @@ export default function Sidebar() {
                                 label="Dashboard"
                             />
                         </SidebarLinkList>
-                        <SidebarLinkList label="Apperance">
+                        <SidebarLinkList label="Product">
                             <SidebarLinkItem
-                                url="/navigation"
+                                url="/Vector"
                                 icon={
                                     <SidebarLinkItemIcon>
                                         <Home size={18} />
                                     </SidebarLinkItemIcon>
                                 }
-                                label="Navigation"
+                                label="Vector"
                             />
                             <SidebarLinkItem
+                                url="/photography"
                                 icon={
                                     <SidebarLinkItemIcon>
-                                        <GraduationCap size={18} />
+                                        <Home size={18} />
                                     </SidebarLinkItemIcon>
                                 }
-                                label="Course"
-                            >
-                                <SidebarSubLinkList>
-                                    <SidebarSubLinkItem
-                                        url="/dashboard/course/search"
-                                        label="Search course"
-                                    />
-                                    <SidebarSubLinkItem
-                                        url="/dashboard/course/detail"
-                                        label="Course details"
-                                    />
-                                </SidebarSubLinkList>
-                            </SidebarLinkItem>
+                                label="Photography"
+                            />
                             <SidebarLinkItem
+                                url="/code"
                                 icon={
                                     <SidebarLinkItemIcon>
-                                        <User2 size={18} />
+                                        <Home size={18} />
                                     </SidebarLinkItemIcon>
                                 }
-                                label="My account"
-                            >
-                                <SidebarSubLinkList>
-                                    <SidebarSubLinkItem
-                                        url="/dashboard/profile"
-                                        label="Profile"
-                                    />
-                                    <SidebarSubLinkItem
-                                        url="/dashboard/settings/profile"
-                                        label="Settings"
-                                    />
-                                </SidebarSubLinkList>
-                            </SidebarLinkItem>
+                                label="Source Code"
+                            />
                         </SidebarLinkList>
                         <SidebarLinkList label="Pages">
                             <SidebarLinkItem

@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import CartItem from "./CartItem";
 
 export default function Cart() {
@@ -21,9 +22,12 @@ export default function Cart() {
                     <p className="text-sm text-neutral-500">Total</p>
                     <p className="font-medium text-lg">$363</p>
                 </div>
-                <a href="/dashboard" className="btn btn-sm btn-primary w-full">
+                <Link
+                    href="/dashboard"
+                    className="btn btn-sm btn-primary w-full"
+                >
                     Proceed to checkout
-                </a>
+                </Link>
             </div>
         </div>
     );

@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('vector_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name'); // Nama subkategori (e.g., Illustrasi, Logo)
+            $table->foreignId('category_id') // Foreign key untuk merujuk ke tabel categories
+                ->constrained('categories')
+                ->onDelete('cascade'); // Hapus subkategori jika kategori dihapus
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('vector_categories');
     }
 };

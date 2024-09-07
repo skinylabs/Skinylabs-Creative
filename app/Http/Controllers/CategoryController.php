@@ -17,12 +17,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Ambil semua data kategori
-        $categories = Category::all();
+        $categories = Category::paginate(10); // Tambahkan paginasi jika perlu
 
-        // Kirim data kategori ke view menggunakan Inertia
         return Inertia::render('Backend/Product/Category/Index', [
-            'Categories' => $categories, // Mengirimkan array asosiatif 'Categories'
+            'Categories' => $categories,
         ]);
     }
 
@@ -31,9 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return inertia('Backend/Product/Category/Create', [
-            'categories' => Category::all()
-        ]);
+        return Inertia::render('Backend/Product/Category/Create');
     }
 
     /**
@@ -42,19 +38,13 @@ class CategoryController extends Controller
     public function store(StoreProductCategoryRequest $request)
     {
         $data = $request->validated();
-
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
 
         Category::create($data);
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        //
+        return redirect()->route('categories.index')
+            ->with('success', 'Category created successfully');
     }
 
     /**
@@ -62,7 +52,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return inertia('Backend/Product/Category/Edit', [
+        return Inertia::render('Backend/Product/Category/Edit', [
             'category' => new ProjectCategoryResource($category),
         ]);
     }
@@ -73,13 +63,12 @@ class CategoryController extends Controller
     public function update(UpdateProductCategoryRequest $request, Category $category)
     {
         $data = $request->validated();
-
         $data['updated_by'] = Auth::id();
 
         $category->update($data);
 
-        return to_route('categories.index')
-            ->with('success', "Product Category \"$category->name\" was updated");
+        return redirect()->route('categories.index')
+            ->with('success', "Category \"$category->name\" updated successfully");
     }
 
     /**
@@ -89,10 +78,8 @@ class CategoryController extends Controller
     {
         $name = $category->name;
         $category->delete();
-        // if ($category->image_path) {
-        //     Storage::disk('public')->deleteDirectory(dirname($category->image_path));
-        // }
-        // return to_route('categories.index')
-        //     ->with('success', "Project Category \"$name\" was deleted");
+
+        return redirect()->route('categories.index')
+            ->with('success', "Category \"$name\" deleted successfully");
     }
 }
