@@ -18,7 +18,7 @@ class VectorAssetsController extends Controller
     {
         $vectorAssets = VectorAssets::with('vectorCategory')->paginate(10);
 
-        return Inertia::render('Backend/Vector/Asset/Index', [
+        return Inertia::render('Backend/Product/Vector/Assets/Index', [
             'VectorAssets' => $vectorAssets,
         ]);
     }

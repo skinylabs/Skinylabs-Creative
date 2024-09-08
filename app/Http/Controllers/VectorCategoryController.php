@@ -18,7 +18,7 @@ class VectorCategoryController extends Controller
     {
         $vectorCategories = VectorCategory::with('category')->paginate(10);
 
-        return Inertia::render('Backend/Vector/Category/Index', [
+        return Inertia::render('Backend/Product/Vector/Category/Index', [
             'VectorCategories' => $vectorCategories,
         ]);
     }
@@ -43,9 +43,6 @@ class VectorCategoryController extends Controller
         $data['updated_by'] = Auth::id();
 
         VectorCategory::create($data);
-
-        return redirect()->route('vectorCategories.index')
-            ->with('success', 'Vector Category created successfully');
     }
 
     /**

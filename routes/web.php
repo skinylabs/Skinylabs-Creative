@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VectorAssetsController;
+use App\Http\Controllers\VectorCategoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,6 +22,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 route::resource('categories', CategoryController::class)->middleware(['auth']);
+
+// Rute resource untuk VectorCategory
+Route::resource('vector-categories', VectorCategoryController::class)->middleware(['auth']);
+
+// Rute resource untuk VectorAsset
+Route::resource('vector-assets', VectorAssetsController::class)->middleware(['auth']);
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
