@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VectorAssetsController;
 use App\Http\Controllers\VectorCategoryController;
@@ -21,7 +21,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-route::resource('categories', CategoryController::class)->middleware(['auth']);
+route::resource('product-categories', ProductCategoryController::class)->middleware(['auth']);
 
 // Rute resource untuk VectorCategory
 Route::resource('vector-categories', VectorCategoryController::class)->middleware(['auth']);

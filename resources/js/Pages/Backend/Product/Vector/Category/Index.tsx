@@ -1,37 +1,37 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
-
+import CreateModal from "./Partials/Create";
+import DeleteCategoryModal from "./Partials/Delete";
 import AdminHeader from "@/Components/Backend/AdminHeader";
-import CreateVectorCategoryModal from "./Partials/Create";
-import EditVectorCategoryModal from "./Partials/Edit";
-import DeleteVectorCategoryModal from "./Partials/Delete";
+import EditModal from "./Partials/Edit";
 
-interface VectorCategory {
+interface ProductCategories {
     id: number;
     name: string;
 }
 
 interface Props extends PageProps {
-    VectorCategories: VectorCategory[];
+    Categories: ProductCategories[];
 }
 
-const VectorCategoryPage = ({ VectorCategories }: Props) => {
+const ProductCategoryPage = ({ Categories = [] }: Props) => {
+    console.log("Categories in IndexPage:", Categories);
     const BreadcrumbItem = [
-        { label: "Assets", href: "/" },
-        { label: "Vector Categories" },
+        { label: "Product", href: "/" },
+        { label: "Category" },
     ];
 
     return (
         <AdminLayout>
-            <Head title="Vector Categories" />
+            <Head title="Product Categories" />
             <AdminHeader items={BreadcrumbItem} title="Vector Categories" />
             <div className="flex justify-end">
-                <CreateVectorCategoryModal categories={categories} />
+                <CreateModal ProductCategories={Categories} />
             </div>
 
             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
-                {VectorCategories.length > 0 ? (
+                {Categories.length > 0 ? (
                     <table className="min-w-full table-auto">
                         <thead>
                             <tr>
@@ -40,16 +40,14 @@ const VectorCategoryPage = ({ VectorCategories }: Props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {VectorCategories.map((category) => (
+                            {Categories.map((category) => (
                                 <tr key={category.id}>
                                     <td className="px-4 py-2">
                                         {category.name}
                                     </td>
                                     <td className="px-4 py-2 flex gap-4">
-                                        <EditVectorCategoryModal
-                                            category={category}
-                                        />
-                                        <DeleteVectorCategoryModal
+                                        <EditModal category={category} />
+                                        <DeleteCategoryModal
                                             category={category}
                                         />
                                     </td>
@@ -67,4 +65,4 @@ const VectorCategoryPage = ({ VectorCategories }: Props) => {
     );
 };
 
-export default VectorCategoryPage;
+export default ProductCategoryPage;

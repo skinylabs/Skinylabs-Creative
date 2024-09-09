@@ -1,4 +1,3 @@
-// resources/js/Pages/Backend/Product/VectorCategory/Partials/Create.tsx
 import { useState, FormEventHandler } from "react";
 import Modal from "@/Components/Modal";
 import { useForm } from "@inertiajs/react";
@@ -8,12 +7,21 @@ import Label from "@/Components/ui/Label";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export default function CreateVectorCategoryModal({ categories }: { categories: any[] }) {
+export interface ProductCategory {
+    id: number;
+    name: string;
+}
+interface Props {
+    ProductCategories: ProductCategory[];
+}
+
+export default function CreateModal({ ProductCategories }: Props) {
+    console.log(ProductCategories);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { data, setData, post, reset, errors, processing } = useForm({
         name: "",
-        category_id: "", // Foreign key untuk category
+        vector_category_id: "",
     });
 
     const openModal = () => {
@@ -28,13 +36,13 @@ export default function CreateVectorCategoryModal({ categories }: { categories: 
     const submitCategory: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route("vector-categories.store"), {
+        post(route("vectorCategories.store"), {
             onSuccess: () => {
                 toast.success("Vector Category successfully created!");
                 closeModal();
             },
             onError: () => {
-                toast.error("Failed to create vector category.");
+                toast.warning("Failed to create Vector Category.");
             },
         });
     };
@@ -54,6 +62,7 @@ export default function CreateVectorCategoryModal({ categories }: { categories: 
                         Add Vector Category
                     </h2>
 
+                    {/* Input untuk Name */}
                     <div className="mt-4">
                         <Label htmlFor="name">Name</Label>
                         <Input
@@ -67,23 +76,35 @@ export default function CreateVectorCategoryModal({ categories }: { categories: 
                         <InputError message={errors.name} className="mt-2" />
                     </div>
 
+                    {/* Dropdown Select untuk Kategori */}
                     <div className="mt-4">
-                        <Label htmlFor="category_id">Category</Label>
+                        <Label htmlFor="vector_category_id">Category</Label>
                         <select
-                            id="category_id"
-                            value={data.category_id}
-                            onChange={(e) => setData("category_id", e.target.value)}
+                            id="vector_category_id"
+                            value={data.vector_category_id}
+                            onChange={(e) =>
+                                setData("vector_category_id", e.target.value)
+                            }
                             className="mt-1 block w-full"
                             required
                         >
-                            <option value="">Select Category</option>
-                            {categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
+                            <option value="">Select a category</option>
+                            {ProductCategories.length > 0 ? (
+                                ProductCategories.map((pc) => (
+                                    <option key={pc.id} value={pc.id}>
+                                        {pc.name}
+                                    </option>
+                                ))
+                            ) : (
+                                <option disabled>
+                                    No categories available
                                 </option>
-                            ))}
+                            )}
                         </select>
-                        <InputError message={errors.category_id} className="mt-2" />
+                        <InputError
+                            message={errors.vector_category_id}
+                            className="mt-2"
+                        />
                     </div>
 
                     <div className="mt-6 flex justify-end">

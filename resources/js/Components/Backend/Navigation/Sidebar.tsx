@@ -48,7 +48,16 @@ export default function Sidebar() {
                         </SidebarLinkList>
                         <SidebarLinkList label="Product">
                             <SidebarLinkItem
-                                url="/Vector"
+                                url="/product-categories"
+                                icon={
+                                    <SidebarLinkItemIcon>
+                                        <Home size={18} />
+                                    </SidebarLinkItemIcon>
+                                }
+                                label="Product Category"
+                            />
+                            <SidebarLinkItem
+                                url="/vector-assets"
                                 icon={
                                     <SidebarLinkItemIcon>
                                         <Home size={18} />

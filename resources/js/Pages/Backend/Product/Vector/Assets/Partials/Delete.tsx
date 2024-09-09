@@ -1,31 +1,29 @@
-// resources/js/Pages/Backend/Product/VectorAsset/Partials/Delete.tsx
 import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Modal from "@/Components/Modal";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 
-interface VectorAsset {
+interface Category {
     id: number;
     name: string;
-    // Tambahkan field lain sesuai kebutuhan
 }
 
-interface DeleteVectorAssetModalProps {
-    asset: VectorAsset;
+interface DeleteCategoryModalProps {
+    category: Category;
 }
 
-const DeleteVectorAssetsModal = ({ asset }: DeleteVectorAssetModalProps) => {
+const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
     const [showModal, setShowModal] = useState(false);
 
-    const deleteAsset = (asset: VectorAsset, closeModal: () => void) => {
-        router.delete(route("vector-assets.destroy", asset.id), {
+    const deleteCategory = (category: Category, closeModal: () => void) => {
+        router.delete(route("categories.destroy", category.id), {
             onSuccess: () => {
                 closeModal();
-                toast.error(`Vector Asset "${asset.name}" was deleted`);
+                toast.error(`Project Category "${category.name}" was deleted`);
             },
             onError: () => {
-                toast.warning("Failed to delete vector asset.");
+                toast.warning("Failed to delete category.");
             },
         });
     };
@@ -39,7 +37,7 @@ const DeleteVectorAssetsModal = ({ asset }: DeleteVectorAssetModalProps) => {
     };
 
     const handleDelete = () => {
-        deleteAsset(asset, closeModal);
+        deleteCategory(category, closeModal); // Panggil deleteCategory dengan closeModal
     };
 
     return (
@@ -54,8 +52,8 @@ const DeleteVectorAssetsModal = ({ asset }: DeleteVectorAssetModalProps) => {
             <Modal show={showModal} onClose={closeModal}>
                 <div className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete the vector asset "
-                        {asset.name}"?
+                        Are you sure you want to delete the category "
+                        {category.name}"?
                     </h2>
                     <div className="mt-6 flex justify-end">
                         <Button
@@ -70,7 +68,7 @@ const DeleteVectorAssetsModal = ({ asset }: DeleteVectorAssetModalProps) => {
                             className={`${buttonVariants({
                                 variant: "destructive",
                             })} ms-3`}
-                            onClick={handleDelete}
+                            onClick={handleDelete} // Panggil fungsi handleDelete untuk hapus
                         >
                             Delete
                         </Button>
@@ -81,4 +79,4 @@ const DeleteVectorAssetsModal = ({ asset }: DeleteVectorAssetModalProps) => {
     );
 };
 
-export default DeleteVectorAssetsModal;
+export default DeleteCategoryModal;

@@ -24,7 +24,7 @@ class StoreVectorAssetsRequest extends FormRequest
         return [
             'name' => ['required', 'max:255'],
             'description' => ['required', 'max:1000'],
-            'category_id' => ['required', 'exists:vector_categories,id'],
+            'vector_category_id' => ['required', 'exists:vector_categories,id'],
             'file' => ['required', 'file', 'mimes:svg,png,jpg,jpeg', 'max:2048'], // sesuaikan ekstensi dan ukuran file sesuai kebutuhan
             'status' => ['required', 'in:active,inactive'],
         ];

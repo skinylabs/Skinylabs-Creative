@@ -6,6 +6,7 @@ use App\Http\Requests\StoreVectorCategoryRequest;
 use App\Http\Requests\UpdateVectorCategoryRequest;
 use App\Models\VectorCategory;
 use App\Models\Category;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -16,20 +17,20 @@ class VectorCategoryController extends Controller
      */
     public function index()
     {
-        $vectorCategories = VectorCategory::with('category')->paginate(10);
-
+        $categories = Category::all();
         return Inertia::render('Backend/Product/Vector/Category/Index', [
-            'VectorCategories' => $vectorCategories,
+            'categories' => $categories
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(ProductCategory $productCategories)
     {
+        $productCategories = ProductCategory::all();
         return Inertia::render('Backend/Vector/Category/Create', [
-            'categories' => Category::all()
+            'productCategories' => $productCategories
         ]);
     }
 

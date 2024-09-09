@@ -6,21 +6,18 @@ import InputError from "@/Components/ui/InputError";
 import Label from "@/Components/ui/Label";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
+import ToggleRoundSwitcher from "@/Components/ui/Toggle";
 
-export default function CreateVectorAssetModal({
-    vectorCategories,
-}: {
-    vectorCategories: any[];
-}) {
+export default function CreateModal() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [status, setStatus] = useState<string>("inactive");
 
     const { data, setData, post, reset, errors, processing } = useForm({
         name: "",
         description: "",
-        vector_category_id: "", // Foreign key ke vector_categories
-        file: null,
-        price: "",
-        status: "active", // default status
+        vector_category_id: "",
+        file: null as File | null,
+        status: "inactive",
     });
 
     const openModal = () => {
@@ -32,7 +29,7 @@ export default function CreateVectorAssetModal({
         reset();
     };
 
-    const submitAsset: FormEventHandler = (e) => {
+    const submitCategory: FormEventHandler = (e) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -40,22 +37,21 @@ export default function CreateVectorAssetModal({
         formData.append("description", data.description);
         formData.append("vector_category_id", data.vector_category_id);
 
-        // Cek apakah file ada sebelum append
         if (data.file) {
             formData.append("file", data.file);
         }
 
-        formData.append("price", data.price);
-        formData.append("status", data.status);
+        formData.append("status", status);
 
         post(route("vector-assets.store"), {
             data: formData,
             onSuccess: () => {
-                toast.success("Vector Asset successfully created!");
+                toast.success("Category successfully created!");
                 closeModal();
             },
             onError: () => {
-                toast.error("Failed to create vector asset.");
+                console.error(errors);
+                toast.warning("Failed to create category.");
             },
         });
     };
@@ -66,17 +62,13 @@ export default function CreateVectorAssetModal({
                 onClick={openModal}
                 className={buttonVariants({ variant: "default", size: "lg" })}
             >
-                Add Vector Asset
+                Add Product Category
             </Button>
 
             <Modal show={isModalOpen} onClose={closeModal}>
-                <form
-                    onSubmit={submitAsset}
-                    encType="multipart/form-data"
-                    className="p-6"
-                >
+                <form onSubmit={submitCategory} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Add Vector Asset
+                        Add Product Category
                     </h2>
 
                     <div className="mt-4">
@@ -87,37 +79,11 @@ export default function CreateVectorAssetModal({
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
                             className="mt-1 block w-full"
+                            isFocused={true}
                             required
                         />
                         <InputError message={errors.name} className="mt-2" />
                     </div>
-
-                    <div className="mt-4">
-                        <Label htmlFor="vector_category_id">
-                            Vector Category
-                        </Label>
-                        <select
-                            id="vector_category_id"
-                            value={data.vector_category_id}
-                            onChange={(e) =>
-                                setData("vector_category_id", e.target.value)
-                            }
-                            className="mt-1 block w-full"
-                            required
-                        >
-                            <option value="">Select Vector Category</option>
-                            {vectorCategories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                        </select>
-                        <InputError
-                            message={errors.vector_category_id}
-                            className="mt-2"
-                        />
-                    </div>
-
                     <div className="mt-4">
                         <Label htmlFor="description">Description</Label>
                         <Input
@@ -128,57 +94,68 @@ export default function CreateVectorAssetModal({
                                 setData("description", e.target.value)
                             }
                             className="mt-1 block w-full"
+                            isFocused={true}
+                            required
                         />
                         <InputError
                             message={errors.description}
                             className="mt-2"
                         />
                     </div>
-
+                    <div className="mt-4">
+                        <Label htmlFor="vector_category_id">Category</Label>
+                        <select
+                            id="vector_category_id"
+                            value={data.vector_category_id}
+                            onChange={(e) =>
+                                setData("vector_category_id", e.target.value)
+                            }
+                            className="mt-1 block w-full"
+                            required
+                        >
+                            <option value="">Select a category</option>
+                            {/* Map categories here */}
+                            <option value="1">Category 1</option>
+                            <option value="2">Category 2</option>
+                        </select>
+                        <InputError
+                            message={errors.vector_category_id}
+                            className="mt-2"
+                        />
+                    </div>
                     <div className="mt-4">
                         <Label htmlFor="file">File</Label>
                         <Input
                             id="file"
                             type="file"
-                            onChange={(e) =>
-                                setData("file", e.target.files?.[0])
-                            }
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                    setData("file", e.target.files[0]);
+                                }
+                            }}
                             className="mt-1 block w-full"
+                            required
                         />
                         <InputError message={errors.file} className="mt-2" />
                     </div>
-
-                    <div className="mt-4">
-                        <Label htmlFor="price">Price</Label>
-                        <Input
-                            id="price"
-                            type="number"
-                            value={data.price}
-                            onChange={(e) => setData("price", e.target.value)}
-                            className="mt-1 block w-full"
-                        />
-                        <InputError message={errors.price} className="mt-2" />
-                    </div>
-
                     <div className="mt-4">
                         <Label htmlFor="status">Status</Label>
-                        <select
-                            id="status"
-                            value={data.status}
-                            onChange={(e) => setData("status", e.target.value)}
-                            className="mt-1 block w-full"
-                        >
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
+                        <ToggleRoundSwitcher
+                            checked={status === "active"}
+                            onChange={() =>
+                                setStatus(
+                                    status === "active" ? "inactive" : "active"
+                                )
+                            }
+                        />
                         <InputError message={errors.status} className="mt-2" />
                     </div>
 
                     <div className="mt-6 flex justify-end">
                         <Button
-                            className={`${buttonVariants({
+                            className={buttonVariants({
                                 variant: "destructive",
-                            })}`}
+                            })}
                             onClick={closeModal}
                             disabled={processing}
                         >
@@ -186,9 +163,9 @@ export default function CreateVectorAssetModal({
                         </Button>
                         <Button
                             type="submit"
-                            className={`${buttonVariants({
-                                variant: "default",
-                            })} ms-3`}
+                            className={
+                                buttonVariants({ variant: "default" }) + " ms-3"
+                            }
                             disabled={processing}
                         >
                             Submit

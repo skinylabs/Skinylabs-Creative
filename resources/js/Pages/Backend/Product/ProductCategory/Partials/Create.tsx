@@ -26,7 +26,7 @@ export default function CreateModal() {
     const submitCategory: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route("categories.store"), {
+        post(route("product-categories.store"), {
             onSuccess: () => {
                 toast.success("Category successfully created!");
                 closeModal();
@@ -60,6 +60,7 @@ export default function CreateModal() {
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
                             className="mt-1 block w-full"
+                            isFocused={true}
                             required
                         />
                         <InputError message={errors.name} className="mt-2" />

@@ -26,11 +26,11 @@ const EditModal = ({ category }: EditCategoryModalProps) => {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route("categories.update", category.id), {
+        put(route("product-categories.update", category.id), {
             onSuccess: () => {
                 setShowModal(false); // Tutup modal setelah update berhasil
                 toast.success(
-                    `Category "${category.name}" updated successfully!`
+                    `Product Category "${category.name}" updated successfully!`
                 );
             },
             onError: () => {

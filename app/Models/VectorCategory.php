@@ -9,19 +9,18 @@ class VectorCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'vector_categories'; // Nama tabel di database
     protected $fillable = [
         'name',
         'category_id',
     ];
 
-    public function category()
+    // Relasi Many to One dengan Category
+    public function productCategory()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(ProductCategory::class);
     }
-
     public function vectorAssets()
     {
-        return $this->hasMany(VectorAssets::class, 'category_id');
+        return $this->hasMany(VectorAssets::class);
     }
 }

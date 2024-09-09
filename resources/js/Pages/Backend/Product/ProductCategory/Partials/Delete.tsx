@@ -17,13 +17,13 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
     const [showModal, setShowModal] = useState(false);
 
     const deleteCategory = (category: Category, closeModal: () => void) => {
-        router.delete(route("categories.destroy", category.id), {
+        router.delete(route("product-categories.destroy", category.id), {
             onSuccess: () => {
                 closeModal();
-                toast.error(`Project Category "${category.name}" was deleted`);
+                toast.error(`Product Category "${category.name}" was deleted`);
             },
             onError: () => {
-                toast.warning("Failed to delete category.");
+                toast.warning("Failed to delete Product Category.");
             },
         });
     };

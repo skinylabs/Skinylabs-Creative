@@ -1,116 +1,100 @@
-import InputError from "@/Components/ui/InputError";
-import { Button, buttonVariants } from "@/components/ui/button";
+// resources/js/Pages/Partials/Edit.tsx
+import { useState, FormEventHandler } from "react";
 import Modal from "@/Components/Modal";
-import { PageProps } from "@/types";
-import { Head, useForm } from "@inertiajs/react";
-import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import Input from "@/Components/ui/Input";
+import InputError from "@/Components/ui/InputError";
+import Label from "@/Components/ui/Label";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
 
-interface VectorCategory {
-    id: number;
-    name: string;
+interface Props {
+    category: {
+        id: number;
+        name: string;
+    };
 }
 
-interface EditVectorCategoryModalProps {
-    category: VectorCategory;
-}
+export default function EditVectorCategoryModal({ category }: Props) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-const EditVectorCategoryModal = ({
-    category,
-}: EditVectorCategoryModalProps) => {
-    const [showModal, setShowModal] = useState(false);
-
-    const { data, setData, put, errors } = useForm({
-        name: category.name || "",
-        _method: "PUT",
+    const { data, setData, put, reset, errors, processing } = useForm({
+        name: category.name,
     });
 
-    const onSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        put(route("vector-categories.update", category.id), {
-            onSuccess: () => {
-                setShowModal(false);
-                toast.success(
-                    `Vector category "${category.name}" updated successfully!`
-                );
-            },
-            onError: () => {
-                toast.error("Failed to update vector category.");
-            },
-        });
-    };
-
     const openModal = () => {
-        setShowModal(true);
+        setIsModalOpen(true);
     };
 
     const closeModal = () => {
-        setShowModal(false);
+        setIsModalOpen(false);
+        reset();
+    };
+
+    const submitCategory: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        put(route("vector-categories.update", category.id), {
+            onSuccess: () => {
+                toast.success("Vector Category updated successfully!");
+                closeModal();
+            },
+            onError: () => {
+                toast.warning("Failed to update Vector Category.");
+            },
+        });
     };
 
     return (
         <>
             <Button
-                className={buttonVariants({ variant: "default" })}
                 onClick={openModal}
+                className={buttonVariants({ variant: "default", size: "sm" })}
             >
-                Edit Category
+                Edit
             </Button>
 
-            <Modal show={showModal} onClose={closeModal}>
-                <Head title="Edit Vector Category" />
-                <div className="p-6 text-gray-900">
-                    <h2 className="text-lg font-medium">
+            <Modal show={isModalOpen} onClose={closeModal}>
+                <form onSubmit={submitCategory} className="p-6">
+                    <h2 className="text-lg font-medium text-gray-900">
                         Edit Vector Category
                     </h2>
-                    <form
-                        onSubmit={onSubmit}
-                        className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
-                    >
-                        <div>
-                            <label
-                                htmlFor="name"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Name
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                value={data.name}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                                onChange={(e) =>
-                                    setData("name", e.target.value)
-                                }
-                            />
-                            <InputError
-                                message={errors.name}
-                                className="mt-2 text-red-500 text-sm"
-                            />
-                        </div>
-                        <div className="mt-4 flex justify-end">
-                            <Button
-                                className={buttonVariants({
-                                    variant: "secondary",
-                                })}
-                                onClick={closeModal}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                className={buttonVariants({
-                                    variant: "default",
-                                })}
-                                type="submit"
-                            >
-                                Save Changes
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+
+                    <div className="mt-4">
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                            id="name"
+                            type="text"
+                            value={data.name}
+                            onChange={(e) => setData("name", e.target.value)}
+                            className="mt-1 block w-full"
+                            required
+                        />
+                        <InputError message={errors.name} className="mt-2" />
+                    </div>
+
+                    <div className="mt-6 flex justify-end">
+                        <Button
+                            className={`${buttonVariants({
+                                variant: "destructive",
+                            })}`}
+                            onClick={closeModal}
+                            disabled={processing}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            className={`${buttonVariants({
+                                variant: "default",
+                            })} ms-3`}
+                            disabled={processing}
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                </form>
             </Modal>
         </>
     );
-};
-
-export default EditVectorCategoryModal;
+}

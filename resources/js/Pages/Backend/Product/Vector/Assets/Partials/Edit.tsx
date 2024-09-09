@@ -1,4 +1,3 @@
-// resources/js/Pages/Backend/Product/VectorAsset/Partials/Edit.tsx
 import InputError from "@/Components/ui/InputError";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Modal from "@/Components/Modal";
@@ -7,36 +6,35 @@ import { Head, useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-// Definisikan tipe untuk vector asset
-interface VectorAsset {
+// Definisikan tipe untuk category
+interface Category {
     id: number;
     name: string;
-    // Tambahkan field lain sesuai kebutuhan
 }
 
-interface EditVectorAssetModalProps {
-    asset: VectorAsset;
+interface EditCategoryModalProps {
+    category: Category;
 }
+const EditModal = ({ category }: EditCategoryModalProps) => {
+    const [showModal, setShowModal] = useState(false); // State untuk mengontrol modal
 
-const EditVectorAssetsModal = ({ asset }: EditVectorAssetModalProps) => {
-    const [showModal, setShowModal] = useState(false);
-
+    // Menggunakan useForm untuk form dengan metode PUT
     const { data, setData, put, errors } = useForm({
-        name: asset.name || "",
-        _method: "PUT",
+        name: category.name || "", // Atur default value untuk field name
+        _method: "PUT", // Menentukan metode PUT
     });
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route("vector-assets.update", asset.id), {
+        put(route("categories.update", category.id), {
             onSuccess: () => {
-                setShowModal(false);
+                setShowModal(false); // Tutup modal setelah update berhasil
                 toast.success(
-                    `Vector Asset "${asset.name}" updated successfully!`
+                    `Category "${category.name}" updated successfully!`
                 );
             },
             onError: () => {
-                toast.error("Failed to update vector asset.");
+                toast.error("Failed to update category.");
             },
         });
     };
@@ -55,13 +53,13 @@ const EditVectorAssetsModal = ({ asset }: EditVectorAssetModalProps) => {
                 className={buttonVariants({ variant: "default" })}
                 onClick={openModal}
             >
-                Edit Asset
+                Edit Category
             </Button>
 
             <Modal show={showModal} onClose={closeModal}>
-                <Head title="Edit Vector Asset" />
+                <Head title="Edit Category" />
                 <div className="p-6 text-gray-900">
-                    <h2 className="text-lg font-medium">Edit Vector Asset</h2>
+                    <h2 className="text-lg font-medium">Edit Category</h2>
                     <form
                         onSubmit={onSubmit}
                         className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
@@ -74,7 +72,7 @@ const EditVectorAssetsModal = ({ asset }: EditVectorAssetModalProps) => {
                                 Name
                             </label>
                             <input
-                                id="asset_name"
+                                id="category_name"
                                 type="text"
                                 name="name"
                                 value={data.name}
@@ -84,12 +82,12 @@ const EditVectorAssetsModal = ({ asset }: EditVectorAssetModalProps) => {
                                     setData("name", e.target.value)
                                 }
                             />
+                            {/* Tampilkan error jika ada */}
                             <InputError
                                 message={errors.name}
                                 className="mt-2 text-red-500 text-sm"
                             />
                         </div>
-                        {/* Tambahkan field lain sesuai kebutuhan */}
                         <div className="mt-4 flex justify-end">
                             <Button
                                 className={buttonVariants({
@@ -115,4 +113,4 @@ const EditVectorAssetsModal = ({ asset }: EditVectorAssetModalProps) => {
     );
 };
 
-export default EditVectorAssetsModal;
+export default EditModal;

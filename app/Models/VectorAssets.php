@@ -13,13 +13,14 @@ class VectorAssets extends Model
     protected $fillable = [
         'name',
         'description',
-        'category_id',
+        'vector_category_id', // Pastikan sesuai dengan migrasi
         'file',
+        'price', // Menambahkan 'price' untuk sesuai dengan schema
         'status',
     ];
 
     public function vectorCategory()
     {
-        return $this->belongsTo(VectorCategory::class, 'category_id');
+        return $this->belongsTo(VectorCategory::class, 'vector_category_id'); // Pastikan nama foreign key sesuai
     }
 }
