@@ -2,59 +2,101 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
 import CreateModal from "./Partials/Create";
-import DeleteCategoryModal from "./Partials/Delete";
 import AdminHeader from "@/Components/Backend/AdminHeader";
 import EditModal from "./Partials/Edit";
-
-interface ProductCategories {
+import DeleteModal from "./Partials/Delete";
+import Pagination from "@/Components/ui/Pagination";
+interface VectorCategory {
+    id: number;
+    name: string;
+    product_category_id: number;
+    productCategory?: {
+        id: number;
+        name: string;
+    };
+}
+interface ProductCategory {
     id: number;
     name: string;
 }
 
 interface Props extends PageProps {
-    Categories: ProductCategories[];
+    vectorCategories: {
+        data: VectorCategory[];
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+    };
+    productCategories: ProductCategory[];
 }
 
-const ProductCategoryPage = ({ Categories = [] }: Props) => {
-    console.log("Categories in IndexPage:", Categories);
+const VectorCategoryPage = ({ vectorCategories, productCategories }: Props) => {
+    const { data, current_page, last_page, per_page, total } = vectorCategories;
+
     const BreadcrumbItem = [
-        { label: "Product", href: "/" },
+        { label: "Vector", href: "/" },
         { label: "Category" },
     ];
 
     return (
         <AdminLayout>
-            <Head title="Product Categories" />
-            <AdminHeader items={BreadcrumbItem} title="Vector Categories" />
+            <Head title="Vector Categories" />
+            <AdminHeader items={BreadcrumbItem} title="Vector Category" />
             <div className="flex justify-end">
-                <CreateModal ProductCategories={Categories} />
+                <CreateModal productCategories={productCategories} />
             </div>
 
             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
-                {Categories.length > 0 ? (
-                    <table className="min-w-full table-auto">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2">Name</th>
-                                <th className="px-4 py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Categories.map((category) => (
-                                <tr key={category.id}>
-                                    <td className="px-4 py-2">
-                                        {category.name}
-                                    </td>
-                                    <td className="px-4 py-2 flex gap-4">
-                                        <EditModal category={category} />
-                                        <DeleteCategoryModal
-                                            category={category}
-                                        />
-                                    </td>
+                {data.length > 0 ? (
+                    <>
+                        <table className="min-w-full table-auto">
+                            <thead>
+                                <tr>
+                                    <th className="px-4 py-2">No</th>
+                                    <th className="px-4 py-2">Name</th>
+                                    <th className="px-4 py-2">
+                                        Product Category
+                                    </th>
+                                    <th className="px-4 py-2">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {data.map((vectorCategory, index) => (
+                                    <tr key={vectorCategory.id}>
+                                        <td className="px-4 py-2">
+                                            {(current_page - 1) * per_page +
+                                                index +
+                                                1}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                            {vectorCategory.name}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                            {vectorCategory.product_category_id}
+                                        </td>
+                                        <td className="px-4 py-2 flex gap-4">
+                                            <EditModal
+                                                vectorCategory={vectorCategory}
+                                            />
+                                            <DeleteModal
+                                                vectorCategory={vectorCategory}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <Pagination
+                            current_page={current_page}
+                            last_page={last_page}
+                        />
+                        <div className="mt-4">
+                            <span>
+                                Page {current_page} of {last_page}
+                            </span>
+                        </div>
+                    </>
                 ) : (
                     <div className="p-4 text-center text-gray-500">
                         No categories available.
@@ -65,4 +107,4 @@ const ProductCategoryPage = ({ Categories = [] }: Props) => {
     );
 };
 
-export default ProductCategoryPage;
+export default VectorCategoryPage;

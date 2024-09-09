@@ -4,28 +4,36 @@ import Modal from "@/Components/Modal";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 
-interface Category {
+interface ProductCategories {
     id: number;
     name: string;
 }
 
 interface DeleteCategoryModalProps {
-    category: Category;
+    ProductCategories: ProductCategories;
 }
 
-const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
+const DeleteModal = ({ ProductCategories }: DeleteCategoryModalProps) => {
     const [showModal, setShowModal] = useState(false);
 
-    const deleteCategory = (category: Category, closeModal: () => void) => {
-        router.delete(route("product-categories.destroy", category.id), {
-            onSuccess: () => {
-                closeModal();
-                toast.error(`Product Category "${category.name}" was deleted`);
-            },
-            onError: () => {
-                toast.warning("Failed to delete Product Category.");
-            },
-        });
+    const deleteProductCategory = (
+        ProductCategories: ProductCategories,
+        closeModal: () => void
+    ) => {
+        router.delete(
+            route("product-categories.destroy", ProductCategories.id),
+            {
+                onSuccess: () => {
+                    closeModal();
+                    toast.error(
+                        `Product Category "${ProductCategories.name}" was deleted`
+                    );
+                },
+                onError: () => {
+                    toast.warning("Failed to delete Product Category.");
+                },
+            }
+        );
     };
 
     const confirmDelete = () => {
@@ -37,7 +45,7 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
     };
 
     const handleDelete = () => {
-        deleteCategory(category, closeModal); // Panggil deleteCategory dengan closeModal
+        deleteProductCategory(ProductCategories, closeModal); // Panggil deleteCategory dengan closeModal
     };
 
     return (
@@ -53,7 +61,7 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
                 <div className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
                         Are you sure you want to delete the category "
-                        {category.name}"?
+                        {ProductCategories.name}"?
                     </h2>
                     <div className="mt-6 flex justify-end">
                         <Button
@@ -79,4 +87,4 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
     );
 };
 
-export default DeleteCategoryModal;
+export default DeleteModal;

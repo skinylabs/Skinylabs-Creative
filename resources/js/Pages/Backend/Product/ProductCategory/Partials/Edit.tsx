@@ -7,30 +7,30 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 
 // Definisikan tipe untuk category
-interface Category {
+interface ProductCategories {
     id: number;
     name: string;
 }
 
 interface EditCategoryModalProps {
-    category: Category;
+    ProductCategories: ProductCategories;
 }
-const EditModal = ({ category }: EditCategoryModalProps) => {
+const EditModal = ({ ProductCategories }: EditCategoryModalProps) => {
     const [showModal, setShowModal] = useState(false); // State untuk mengontrol modal
 
     // Menggunakan useForm untuk form dengan metode PUT
     const { data, setData, put, errors } = useForm({
-        name: category.name || "", // Atur default value untuk field name
+        name: ProductCategories.name || "", // Atur default value untuk field name
         _method: "PUT", // Menentukan metode PUT
     });
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route("product-categories.update", category.id), {
+        put(route("product-categories.update", ProductCategories.id), {
             onSuccess: () => {
                 setShowModal(false); // Tutup modal setelah update berhasil
                 toast.success(
-                    `Product Category "${category.name}" updated successfully!`
+                    `Product Category "${ProductCategories.name}" updated successfully!`
                 );
             },
             onError: () => {

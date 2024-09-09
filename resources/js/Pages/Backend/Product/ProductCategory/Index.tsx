@@ -2,10 +2,10 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
 import CreateModal from "./Partials/Create";
-import DeleteCategoryModal from "./Partials/Delete";
 import AdminHeader from "@/Components/Backend/AdminHeader";
 import EditModal from "./Partials/Edit";
 import Pagination from "@/Components/ui/Pagination";
+import DeleteModal from "./Partials/Delete";
 
 interface ProductCategory {
     id: number;
@@ -51,20 +51,26 @@ const ProductCategoryPage = ({ ProductCategories }: Props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.map((category, index) => (
-                                    <tr key={category.id}>
+                                {data.map((ProductCategories, index) => (
+                                    <tr key={ProductCategories.id}>
                                         <td className="px-4 py-2">
                                             {(current_page - 1) * per_page +
                                                 index +
                                                 1}
                                         </td>
                                         <td className="px-4 py-2">
-                                            {category.name}
+                                            {ProductCategories.name}
                                         </td>
                                         <td className="px-4 py-2 flex gap-4">
-                                            <EditModal category={category} />
-                                            <DeleteCategoryModal
-                                                category={category}
+                                            <EditModal
+                                                ProductCategories={
+                                                    ProductCategories
+                                                }
+                                            />
+                                            <DeleteModal
+                                                ProductCategories={
+                                                    ProductCategories
+                                                }
                                             />
                                         </td>
                                     </tr>

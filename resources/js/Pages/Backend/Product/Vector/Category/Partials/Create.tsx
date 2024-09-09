@@ -7,21 +7,21 @@ import Label from "@/Components/ui/Label";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export interface ProductCategory {
+interface ProductCategory {
     id: number;
     name: string;
 }
-interface Props {
-    ProductCategories: ProductCategory[];
+
+interface CreateModalProps {
+    productCategories: ProductCategory[];
 }
 
-export default function CreateModal({ ProductCategories }: Props) {
-    console.log(ProductCategories);
+export default function CreateModal({ productCategories }: CreateModalProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { data, setData, post, reset, errors, processing } = useForm({
         name: "",
-        vector_category_id: "",
+        product_category_id: "",
     });
 
     const openModal = () => {
@@ -33,16 +33,16 @@ export default function CreateModal({ ProductCategories }: Props) {
         reset();
     };
 
-    const submitCategory: FormEventHandler = (e) => {
+    const submitVectorCategory: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route("vectorCategories.store"), {
+        post(route("vector-categories.store"), {
             onSuccess: () => {
-                toast.success("Vector Category successfully created!");
+                toast.success("Vector category successfully created!");
                 closeModal();
             },
             onError: () => {
-                toast.warning("Failed to create Vector Category.");
+                toast.warning("Failed to create vector category.");
             },
         });
     };
@@ -57,54 +57,47 @@ export default function CreateModal({ ProductCategories }: Props) {
             </Button>
 
             <Modal show={isModalOpen} onClose={closeModal}>
-                <form onSubmit={submitCategory} className="p-6">
+                <form onSubmit={submitVectorCategory} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
                         Add Vector Category
                     </h2>
 
-                    {/* Input untuk Name */}
                     <div className="mt-4">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Vector Category Name</Label>
                         <Input
                             id="name"
                             type="text"
                             value={data.name}
                             onChange={(e) => setData("name", e.target.value)}
                             className="mt-1 block w-full"
+                            isFocused={true}
                             required
                         />
                         <InputError message={errors.name} className="mt-2" />
                     </div>
-
-                    {/* Dropdown Select untuk Kategori */}
                     <div className="mt-4">
-                        <Label htmlFor="vector_category_id">Category</Label>
+                        <Label htmlFor="productCategory">
+                            product Category
+                        </Label>
                         <select
-                            id="vector_category_id"
-                            value={data.vector_category_id}
+                            id="product_category_id"
+                            value={data.product_category_id}
                             onChange={(e) =>
-                                setData("vector_category_id", e.target.value)
+                                setData("product_category_id", e.target.value)
                             }
-                            className="mt-1 block w-full"
+                            className="block w-full mt-1"
                             required
                         >
-                            <option value="">Select a category</option>
-                            {ProductCategories.length > 0 ? (
-                                ProductCategories.map((pc) => (
-                                    <option key={pc.id} value={pc.id}>
-                                        {pc.name}
-                                    </option>
-                                ))
-                            ) : (
-                                <option disabled>
-                                    No categories available
+                            <option value="" disabled>
+                                Select a product category
+                            </option>
+                            {productCategories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
                                 </option>
-                            )}
+                            ))}
                         </select>
-                        <InputError
-                            message={errors.vector_category_id}
-                            className="mt-2"
-                        />
+                        <InputError message={errors.name} className="mt-2" />
                     </div>
 
                     <div className="mt-6 flex justify-end">

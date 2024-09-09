@@ -11,7 +11,7 @@ class VectorCategory extends Model
 
     protected $fillable = [
         'name',
-        'category_id',
+        'product_category_id',
     ];
 
     // Relasi Many to One dengan Category

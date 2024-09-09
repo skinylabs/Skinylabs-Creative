@@ -17,9 +17,15 @@ class VectorCategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        // Ambil data kategori vector dengan pagination
+        $vectorCategories = VectorCategory::paginate(10);
+
+        // Ambil data product categories jika diperlukan
+        $productCategories = ProductCategory::all();
+
         return Inertia::render('Backend/Product/Vector/Category/Index', [
-            'categories' => $categories
+            'vectorCategories' => $vectorCategories,
+            'productCategories' => $productCategories, // Kirim ke frontend
         ]);
     }
 
@@ -28,8 +34,10 @@ class VectorCategoryController extends Controller
      */
     public function create(ProductCategory $productCategories)
     {
+        $vectorCategories = VectorCategory::all();
         $productCategories = ProductCategory::all();
         return Inertia::render('Backend/Vector/Category/Create', [
+            'vectorCategories' => $vectorCategories,
             'productCategories' => $productCategories
         ]);
     }

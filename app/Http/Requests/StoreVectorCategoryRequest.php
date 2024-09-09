@@ -23,7 +23,7 @@ class StoreVectorCategoryRequest extends FormRequest
     {
         return [
             'name' => ['required', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'product_category_id' => ['required', 'exists:product_categories,id'],
         ];
     }
 }

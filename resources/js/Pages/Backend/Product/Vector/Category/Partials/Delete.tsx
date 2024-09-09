@@ -1,37 +1,31 @@
-// resources/js/Pages/Partials/Delete.tsx
-import { useState, FormEventHandler } from "react";
-import Modal from "@/Components/Modal";
-import { useForm } from "@inertiajs/react";
+import { useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import Modal from "@/Components/Modal";
+import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 
-interface Props {
-    category: {
-        id: number;
-        name: string;
-    };
+interface VectorCategory {
+    id: number;
+    name: string;
 }
 
-export default function DeleteVectorCategoryModal({ category }: Props) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+interface DeleteVectorCategoryModalProps {
+    vectorCategory: VectorCategory;
+}
 
-    const { delete: destroy, processing } = useForm();
+const DeleteModal = ({ vectorCategory }: DeleteVectorCategoryModalProps) => {
+    const [showModal, setShowModal] = useState(false);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const submitCategory: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        destroy(route("vector-categories.destroy", category.id), {
+    const deleteVectorCategory = (
+        vectorCategory: VectorCategory,
+        closeModal: () => void
+    ) => {
+        router.delete(route("vector-categories.destroy", vectorCategory.id), {
             onSuccess: () => {
-                toast.success("Vector Category deleted successfully!");
                 closeModal();
+                toast.error(
+                    `Vector Category "${vectorCategory.name}" was deleted`
+                );
             },
             onError: () => {
                 toast.warning("Failed to delete Vector Category.");
@@ -39,51 +33,55 @@ export default function DeleteVectorCategoryModal({ category }: Props) {
         });
     };
 
+    const confirmDelete = () => {
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    const handleDelete = () => {
+        deleteVectorCategory(vectorCategory, closeModal); // Panggil deleteCategory dengan closeModal
+    };
+
     return (
         <>
             <Button
-                onClick={openModal}
-                className={buttonVariants({
-                    variant: "destructive",
-                    size: "sm",
-                })}
+                className={buttonVariants({ variant: "destructive" })}
+                onClick={confirmDelete}
             >
                 Delete
             </Button>
 
-            <Modal show={isModalOpen} onClose={closeModal}>
-                <form onSubmit={submitCategory} className="p-6">
+            <Modal show={showModal} onClose={closeModal}>
+                <div className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Delete Vector Category
+                        Are you sure you want to delete the vector category "
+                        {vectorCategory.name}"?
                     </h2>
-
-                    <p className="mt-2 text-sm text-gray-600">
-                        Are you sure you want to delete this vector category?
-                        This action cannot be undone.
-                    </p>
-
                     <div className="mt-6 flex justify-end">
                         <Button
                             className={`${buttonVariants({
-                                variant: "default",
-                            })}`}
+                                variant: "secondary",
+                            })} ms-4`}
                             onClick={closeModal}
-                            disabled={processing}
                         >
                             Cancel
                         </Button>
                         <Button
-                            type="submit"
                             className={`${buttonVariants({
                                 variant: "destructive",
                             })} ms-3`}
-                            disabled={processing}
+                            onClick={handleDelete} // Panggil fungsi handleDelete untuk hapus
                         >
                             Delete
                         </Button>
                     </div>
-                </form>
+                </div>
             </Modal>
         </>
     );
-}
+};
+
+export default DeleteModal;
