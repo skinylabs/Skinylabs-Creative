@@ -1,6 +1,6 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { PageProps } from "@/types";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import CreateModal from "./Partials/Create";
 import AdminHeader from "@/Components/Backend/AdminHeader";
 
@@ -47,7 +47,8 @@ const VectorCategoryPage = ({ vectorCategories, vectorAssets }: Props) => {
             <Head title="Vector Categories" />
             <AdminHeader items={BreadcrumbItem} title="Vector Category" />
             <div className="flex justify-end">
-                <CreateModal vectorCategories={vectorCategories} />
+                <Link href="/vector-assets/create">Create</Link>
+                {/* <CreateModal vectorCategories={vectorCategories} /> */}
             </div>
 
             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">

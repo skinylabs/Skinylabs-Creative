@@ -35,7 +35,7 @@ class VectorAssetsController extends Controller
 
         $vectorAssets = VectorAssets::all();
         $vectorCategories = VectorCategory::all();
-        return Inertia::render('Backend/Vector/Assets/Create', [
+        return Inertia::render('Backend/Product/Vector/Assets/Partials/Create', [
             'vectorAssets' => $vectorAssets,
             'vectorCategories' => $vectorCategories
         ]);
