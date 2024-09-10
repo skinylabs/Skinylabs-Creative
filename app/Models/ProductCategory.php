@@ -16,6 +16,6 @@ class ProductCategory extends Model
     // Relasi One to Many dengan VectorCategory
     public function vectorCategories()
     {
-        return $this->hasMany(VectorCategory::class);
+        return $this->hasMany(VectorCategory::class, 'product_category_id');
     }
 }

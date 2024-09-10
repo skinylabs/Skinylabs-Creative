@@ -10,17 +10,33 @@ import { toast } from "sonner";
 interface VectorCategory {
     id: number;
     name: string;
+    product_category_id: number;
+    productCategory?: {
+        id: number;
+        name: string;
+    };
+}
+
+interface ProductCategory {
+    id: number;
+    name: string;
 }
 
 interface EditVectorCategoryModalProps {
     vectorCategory: VectorCategory;
+    productCategories: ProductCategory[];
 }
-const EditModal = ({ vectorCategory }: EditVectorCategoryModalProps) => {
+
+const EditModal = ({
+    vectorCategory,
+    productCategories,
+}: EditVectorCategoryModalProps) => {
     const [showModal, setShowModal] = useState(false); // State untuk mengontrol modal
 
     // Menggunakan useForm untuk form dengan metode PUT
-    const { data, setData, put, errors } = useForm({
+    const { data, setData, put, errors, processing } = useForm({
         name: vectorCategory.name || "", // Atur default value untuk field name
+        product_category_id: vectorCategory.product_category_id || "", // Atur default value untuk product category
         _method: "PUT", // Menentukan metode PUT
     });
 
@@ -30,7 +46,7 @@ const EditModal = ({ vectorCategory }: EditVectorCategoryModalProps) => {
             onSuccess: () => {
                 setShowModal(false); // Tutup modal setelah update berhasil
                 toast.success(
-                    `Vector Category "${vectorCategory.name}" updated successfully!`
+                    `Vector Category "${data.name}" updated successfully!`
                 );
             },
             onError: () => {
@@ -72,7 +88,7 @@ const EditModal = ({ vectorCategory }: EditVectorCategoryModalProps) => {
                                 Name
                             </label>
                             <input
-                                id="category_name"
+                                id="name"
                                 type="text"
                                 name="name"
                                 value={data.name}
@@ -88,20 +104,58 @@ const EditModal = ({ vectorCategory }: EditVectorCategoryModalProps) => {
                                 className="mt-2 text-red-500 text-sm"
                             />
                         </div>
-                        <div className="mt-4 flex justify-end">
+                        <div className="mt-4">
+                            <label
+                                htmlFor="product_category_id"
+                                className="block text-sm font-medium text-gray-700"
+                            >
+                                Product Category
+                            </label>
+                            <select
+                                id="product_category_id"
+                                value={data.product_category_id}
+                                onChange={(e) =>
+                                    setData(
+                                        "product_category_id",
+                                        e.target.value
+                                    )
+                                }
+                                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                            >
+                                <option value="" disabled>
+                                    Select a product category
+                                </option>
+                                {productCategories.map((category) => (
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {/* Tampilkan error jika ada */}
+                            <InputError
+                                message={errors.product_category_id}
+                                className="mt-2 text-red-500 text-sm"
+                            />
+                        </div>
+                        <div className="mt-6 flex justify-end">
                             <Button
                                 className={buttonVariants({
                                     variant: "secondary",
                                 })}
                                 onClick={closeModal}
+                                disabled={processing}
                             >
                                 Cancel
                             </Button>
                             <Button
+                                type="submit"
                                 className={`${buttonVariants({
                                     variant: "default",
                                 })} ms-3`}
-                                type="submit"
+                                disabled={processing}
                             >
                                 Save Changes
                             </Button>

@@ -16,10 +16,14 @@ class VectorAssetsController extends Controller
      */
     public function index()
     {
+        // Ambil data kategori vector dengan pagination
         $vectorAssets = VectorAssets::with('vectorCategory')->paginate(10);
 
+        // Ambil data product categories jika diperlukan
+        $vectorCategories = VectorCategory::all();
         return Inertia::render('Backend/Product/Vector/Assets/Index', [
-            'VectorAssets' => $vectorAssets,
+            'vectorAssets' => $vectorAssets,
+            'vectorCategories' => $vectorCategories, // Kirim ke frontend
         ]);
     }
 
@@ -28,8 +32,12 @@ class VectorAssetsController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Backend/Vector/Asset/Create', [
-            'vectorCategories' => VectorCategory::all()
+
+        $vectorAssets = VectorAssets::all();
+        $vectorCategories = VectorCategory::all();
+        return Inertia::render('Backend/Vector/Assets/Create', [
+            'vectorAssets' => $vectorAssets,
+            'vectorCategories' => $vectorCategories
         ]);
     }
 
@@ -39,13 +47,12 @@ class VectorAssetsController extends Controller
     public function store(StoreVectorAssetsRequest $request)
     {
         $data = $request->validated();
+
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
 
-        VectorAssets::create($data);
 
-        return redirect()->route('vectorAssets.index')
-            ->with('success', 'Vector Asset created successfully');
+        VectorAssets::create($data);
     }
 
     /**
@@ -53,7 +60,7 @@ class VectorAssetsController extends Controller
      */
     public function edit(VectorAssets $vectorAsset)
     {
-        return Inertia::render('Backend/Vector/Asset/Edit', [
+        return Inertia::render('Backend/Vector/Assets/Edit', [
             'vectorAsset' => $vectorAsset,
             'vectorCategories' => VectorCategory::all()
         ]);

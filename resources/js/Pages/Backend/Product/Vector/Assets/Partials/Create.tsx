@@ -8,16 +8,25 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { toast } from "sonner";
 import ToggleRoundSwitcher from "@/Components/ui/Toggle";
 
-export default function CreateModal() {
+interface VectorCategory {
+    id: number;
+    name: string;
+}
+
+interface CreateModalProps {
+    vectorCategories: VectorCategory[];
+}
+
+export default function CreateModal({ vectorCategories }: CreateModalProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [status, setStatus] = useState<string>("inactive");
 
     const { data, setData, post, reset, errors, processing } = useForm({
         name: "",
         description: "",
-        vector_category_id: "",
+        vector_category_id: [] as number[], // Accepting multiple IDs
+        price: "",
         file: null as File | null,
-        status: "inactive",
+        status: false, // Boolean for status
     });
 
     const openModal = () => {
@@ -29,29 +38,16 @@ export default function CreateModal() {
         reset();
     };
 
-    const submitCategory: FormEventHandler = (e) => {
+    const submitVectorAssets: FormEventHandler = (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("description", data.description);
-        formData.append("vector_category_id", data.vector_category_id);
-
-        if (data.file) {
-            formData.append("file", data.file);
-        }
-
-        formData.append("status", status);
-
         post(route("vector-assets.store"), {
-            data: formData,
             onSuccess: () => {
-                toast.success("Category successfully created!");
+                toast.success("Vector Assets successfully created!");
                 closeModal();
             },
             onError: () => {
-                console.error(errors);
-                toast.warning("Failed to create category.");
+                toast.warning("Failed to create vector Assets.");
             },
         });
     };
@@ -62,13 +58,13 @@ export default function CreateModal() {
                 onClick={openModal}
                 className={buttonVariants({ variant: "default", size: "lg" })}
             >
-                Add Product Category
+                Add Vector Category
             </Button>
 
             <Modal show={isModalOpen} onClose={closeModal}>
-                <form onSubmit={submitCategory} className="p-6">
+                <form onSubmit={submitVectorAssets} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Add Product Category
+                        Add Vector Category2
                     </h2>
 
                     <div className="mt-4">
@@ -84,6 +80,7 @@ export default function CreateModal() {
                         />
                         <InputError message={errors.name} className="mt-2" />
                     </div>
+
                     <div className="mt-4">
                         <Label htmlFor="description">Description</Label>
                         <Input
@@ -102,35 +99,60 @@ export default function CreateModal() {
                             className="mt-2"
                         />
                     </div>
+
                     <div className="mt-4">
-                        <Label htmlFor="vector_category_id">Category</Label>
+                        <Label htmlFor="vector_category_id">
+                            Vector Category
+                        </Label>
                         <select
                             id="vector_category_id"
-                            value={data.vector_category_id}
-                            onChange={(e) =>
-                                setData("vector_category_id", e.target.value)
-                            }
-                            className="mt-1 block w-full"
+                            multiple
+                            value={data.vector_category_id.map(String)} // Ensure it's a string array
+                            onChange={(e) => {
+                                const selectedOptions = Array.from(
+                                    e.target.selectedOptions,
+                                    (option) => Number(option.value)
+                                );
+                                setData("vector_category_id", selectedOptions);
+                            }}
+                            className="block w-full mt-1"
                             required
                         >
-                            <option value="">Select a category</option>
-                            {/* Map categories here */}
-                            <option value="1">Category 1</option>
-                            <option value="2">Category 2</option>
+                            {vectorCategories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))}
                         </select>
                         <InputError
                             message={errors.vector_category_id}
                             className="mt-2"
                         />
                     </div>
+
+                    <div className="mt-4">
+                        <Label htmlFor="price">Price</Label>
+                        <Input
+                            id="price"
+                            type="number"
+                            value={data.price}
+                            onChange={(e) => setData("price", e.target.value)}
+                            className="mt-1 block w-full"
+                            required
+                        />
+                        <InputError message={errors.price} className="mt-2" />
+                    </div>
+
                     <div className="mt-4">
                         <Label htmlFor="file">File</Label>
                         <Input
                             id="file"
                             type="file"
                             onChange={(e) => {
-                                if (e.target.files && e.target.files[0]) {
-                                    setData("file", e.target.files[0]);
+                                if (e.target.files) {
+                                    const file = e.target.files[0];
+                                    console.log("File selected:", file);
+                                    setData("file", file);
                                 }
                             }}
                             className="mt-1 block w-full"
@@ -138,17 +160,13 @@ export default function CreateModal() {
                         />
                         <InputError message={errors.file} className="mt-2" />
                     </div>
+
                     <div className="mt-4">
                         <Label htmlFor="status">Status</Label>
                         <ToggleRoundSwitcher
-                            checked={status === "active"}
-                            onChange={() =>
-                                setStatus(
-                                    status === "active" ? "inactive" : "active"
-                                )
-                            }
+                            checked={data.status}
+                            onChange={(checked) => setData("status", checked)}
                         />
-                        <InputError message={errors.status} className="mt-2" />
                     </div>
 
                     <div className="mt-6 flex justify-end">
@@ -163,9 +181,9 @@ export default function CreateModal() {
                         </Button>
                         <Button
                             type="submit"
-                            className={
-                                buttonVariants({ variant: "default" }) + " ms-3"
-                            }
+                            className={`${buttonVariants({
+                                variant: "default",
+                            })} ms-3`}
                             disabled={processing}
                         >
                             Submit

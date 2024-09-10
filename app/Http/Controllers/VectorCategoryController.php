@@ -18,7 +18,7 @@ class VectorCategoryController extends Controller
     public function index()
     {
         // Ambil data kategori vector dengan pagination
-        $vectorCategories = VectorCategory::paginate(10);
+        $vectorCategories = VectorCategory::with('productCategory')->paginate(10);
 
         // Ambil data product categories jika diperlukan
         $productCategories = ProductCategory::all();
@@ -75,7 +75,7 @@ class VectorCategoryController extends Controller
 
         $vectorCategory->update($data);
 
-        return redirect()->route('vectorCategories.index')
+        return redirect()->route('vector-categories.index')
             ->with('success', "Vector Category \"$vectorCategory->name\" updated successfully");
     }
 
@@ -87,7 +87,7 @@ class VectorCategoryController extends Controller
         $name = $vectorCategory->name;
         $vectorCategory->delete();
 
-        return redirect()->route('vectorCategories.index')
+        return redirect()->route('vector-categories.index')
             ->with('success', "Vector Category \"$name\" deleted successfully");
     }
 }

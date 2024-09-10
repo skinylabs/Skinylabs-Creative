@@ -1,22 +1,21 @@
 interface ToggleRoundSwitcherProps {
     checked: boolean;
-    onChange: () => void;
+    onChange: (checked: boolean) => void;
 }
 
-const ToggleRoundSwitcher = ({
+const ToggleRoundSwitcher: React.FC<ToggleRoundSwitcherProps> = ({
     checked,
     onChange,
-}: ToggleRoundSwitcherProps) => {
+}) => {
     return (
         <label className="relative inline-flex items-center cursor-pointer">
             <input
                 type="checkbox"
-                value=""
                 className="sr-only peer"
                 checked={checked}
-                onChange={onChange}
+                onChange={(e) => onChange(e.target.checked)}
             />
-            <div className="peer ring-0 bg-rose-400  rounded-full outline-none duration-300 after:duration-500 w-12 h-12  shadow-md peer-checked:bg-emerald-500  peer-focus:outline-none  after:content-['✖️'] after:rounded-full after:absolute after:outline-none after:h-10 after:w-10 after:bg-gray-50 after:top-1 after:left-1 after:flex after:justify-center after:items-center  peer-hover:after:scale-75 peer-checked:after:content-['✔️'] after:-rotate-180 peer-checked:after:rotate-0"></div>
+            <div className="group peer bg-white rounded-full duration-300 w-16 h-8 ring-2 ring-red-500 after:duration-300 after:bg-red-500 peer-checked:after:bg-green-500 peer-checked:ring-green-500 after:rounded-full after:absolute after:h-6 after:w-6 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-checked:after:translate-x-8 peer-hover:after:scale-95"></div>
         </label>
     );
 };

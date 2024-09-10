@@ -10,7 +10,7 @@ interface VectorCategory {
     id: number;
     name: string;
     product_category_id: number;
-    productCategory?: {
+    product_category?: {
         id: number;
         name: string;
     };
@@ -38,7 +38,7 @@ const VectorCategoryPage = ({ vectorCategories, productCategories }: Props) => {
         { label: "Vector", href: "/" },
         { label: "Category" },
     ];
-
+    console.log(vectorCategories);
     return (
         <AdminLayout>
             <Head title="Vector Categories" />
@@ -73,11 +73,15 @@ const VectorCategoryPage = ({ vectorCategories, productCategories }: Props) => {
                                             {vectorCategory.name}
                                         </td>
                                         <td className="px-4 py-2">
-                                            {vectorCategory.product_category_id}
+                                            {vectorCategory.product_category
+                                                ?.name || "No category"}
                                         </td>
                                         <td className="px-4 py-2 flex gap-4">
                                             <EditModal
                                                 vectorCategory={vectorCategory}
+                                                productCategories={
+                                                    productCategories
+                                                }
                                             />
                                             <DeleteModal
                                                 vectorCategory={vectorCategory}

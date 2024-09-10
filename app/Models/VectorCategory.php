@@ -17,7 +17,7 @@ class VectorCategory extends Model
     // Relasi Many to One dengan Category
     public function productCategory()
     {
-        return $this->belongsTo(ProductCategory::class);
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
     public function vectorAssets()
     {

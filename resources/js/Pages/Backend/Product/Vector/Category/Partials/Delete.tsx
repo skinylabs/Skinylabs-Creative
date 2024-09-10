@@ -23,12 +23,12 @@ const DeleteModal = ({ vectorCategory }: DeleteVectorCategoryModalProps) => {
         router.delete(route("vector-categories.destroy", vectorCategory.id), {
             onSuccess: () => {
                 closeModal();
-                toast.error(
+                toast.success(
                     `Vector Category "${vectorCategory.name}" was deleted`
                 );
             },
             onError: () => {
-                toast.warning("Failed to delete Vector Category.");
+                toast.error("Failed to delete Vector Category.");
             },
         });
     };
@@ -62,17 +62,17 @@ const DeleteModal = ({ vectorCategory }: DeleteVectorCategoryModalProps) => {
                     </h2>
                     <div className="mt-6 flex justify-end">
                         <Button
-                            className={`${buttonVariants({
+                            className={buttonVariants({
                                 variant: "secondary",
-                            })} ms-4`}
+                            })}
                             onClick={closeModal}
                         >
                             Cancel
                         </Button>
                         <Button
-                            className={`${buttonVariants({
+                            className={buttonVariants({
                                 variant: "destructive",
-                            })} ms-3`}
+                            })}
                             onClick={handleDelete} // Panggil fungsi handleDelete untuk hapus
                         >
                             Delete

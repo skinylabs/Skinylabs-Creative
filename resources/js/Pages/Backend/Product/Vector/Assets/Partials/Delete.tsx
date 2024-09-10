@@ -4,26 +4,31 @@ import Modal from "@/Components/Modal";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 
-interface Category {
+interface VectorCategory {
     id: number;
     name: string;
 }
 
-interface DeleteCategoryModalProps {
-    category: Category;
+interface DeleteVectorCategoryModalProps {
+    vectorCategory: VectorCategory;
 }
 
-const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
+const DeleteModal = ({ vectorCategory }: DeleteVectorCategoryModalProps) => {
     const [showModal, setShowModal] = useState(false);
 
-    const deleteCategory = (category: Category, closeModal: () => void) => {
-        router.delete(route("categories.destroy", category.id), {
+    const deleteVectorCategory = (
+        vectorCategory: VectorCategory,
+        closeModal: () => void
+    ) => {
+        router.delete(route("vector-categories.destroy", vectorCategory.id), {
             onSuccess: () => {
                 closeModal();
-                toast.error(`Project Category "${category.name}" was deleted`);
+                toast.success(
+                    `Vector Category "${vectorCategory.name}" was deleted`
+                );
             },
             onError: () => {
-                toast.warning("Failed to delete category.");
+                toast.error("Failed to delete Vector Category.");
             },
         });
     };
@@ -37,7 +42,7 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
     };
 
     const handleDelete = () => {
-        deleteCategory(category, closeModal); // Panggil deleteCategory dengan closeModal
+        deleteVectorCategory(vectorCategory, closeModal); // Panggil deleteCategory dengan closeModal
     };
 
     return (
@@ -52,22 +57,22 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
             <Modal show={showModal} onClose={closeModal}>
                 <div className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete the category "
-                        {category.name}"?
+                        Are you sure you want to delete the vector category "
+                        {vectorCategory.name}"?
                     </h2>
                     <div className="mt-6 flex justify-end">
                         <Button
-                            className={`${buttonVariants({
+                            className={buttonVariants({
                                 variant: "secondary",
-                            })} ms-4`}
+                            })}
                             onClick={closeModal}
                         >
                             Cancel
                         </Button>
                         <Button
-                            className={`${buttonVariants({
+                            className={buttonVariants({
                                 variant: "destructive",
-                            })} ms-3`}
+                            })}
                             onClick={handleDelete} // Panggil fungsi handleDelete untuk hapus
                         >
                             Delete
@@ -79,4 +84,4 @@ const DeleteCategoryModal = ({ category }: DeleteCategoryModalProps) => {
     );
 };
 
-export default DeleteCategoryModal;
+export default DeleteModal;
