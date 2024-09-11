@@ -20,7 +20,7 @@ interface AdminHeaderProps {
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ items, title }) => {
     return (
-        <div>
+        <div className="mb-4">
             <h1 className="text-xl font-bold">{title}</h1>
             <Breadcrumb>
                 <BreadcrumbList>

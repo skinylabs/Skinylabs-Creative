@@ -5,6 +5,7 @@ import CreateModal from "./Partials/Create";
 import AdminHeader from "@/Components/Backend/AdminHeader";
 
 import Pagination from "@/Components/ui/Pagination";
+import { buttonVariants } from "@/components/ui/button";
 interface VectorAssets {
     id: number;
     name: string;
@@ -16,7 +17,7 @@ interface VectorAssets {
     vector_category?: {
         id: number;
         name: string;
-    };
+    }[];
 }
 interface VectorCategory {
     id: number;
@@ -44,11 +45,15 @@ const VectorCategoryPage = ({ vectorCategories, vectorAssets }: Props) => {
     console.log(vectorCategories);
     return (
         <AdminLayout>
-            <Head title="Vector Categories" />
-            <AdminHeader items={BreadcrumbItem} title="Vector Category" />
+            <Head title="Vector Assets" />
+            <AdminHeader items={BreadcrumbItem} title="Vector Assets" />
             <div className="flex justify-end">
-                <Link href="/vector-assets/create">Create</Link>
-                {/* <CreateModal vectorCategories={vectorCategories} /> */}
+                <Link
+                    href="/vector-assets/create"
+                    className={buttonVariants({ variant: "default" })}
+                >
+                    Create
+                </Link>
             </div>
 
             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
@@ -77,12 +82,42 @@ const VectorCategoryPage = ({ vectorCategories, vectorAssets }: Props) => {
                                             {vectorAssets.name}
                                         </td>
                                         <td className="px-4 py-2">
+                                            {vectorAssets.description}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                            {vectorAssets.price}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                            {vectorAssets.status}
+                                        </td>
+                                        <td className="px-4 py-2">
+                                            {vectorAssets.file && (
+                                                <img
+                                                    src={`http://localhost:8000/storage/${vectorAssets.file}`}
+                                                    alt={vectorAssets.name}
+                                                    className="w-20 h-20 object-cover"
+                                                />
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-2">
                                             {vectorAssets.vector_category
-                                                ?.name || "No category"}
+                                                ?.map(
+                                                    (category) => category.name
+                                                )
+                                                .join(", ") || "No category"}
                                         </td>
                                         <td className="px-4 py-2 flex gap-4">
-                                            {/* <EditModal />
-                                            <DeleteModal /> */}
+                                            <Link
+                                                href={route(
+                                                    "vector-assets.edit",
+                                                    vectorAssets.id
+                                                )}
+                                                className={buttonVariants({
+                                                    variant: "default",
+                                                })}
+                                            >
+                                                Edit
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}

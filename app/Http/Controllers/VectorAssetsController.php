@@ -6,7 +6,9 @@ use App\Http\Requests\StoreVectorAssetsRequest;
 use App\Http\Requests\UpdateVectorAssetsRequest;
 use App\Models\VectorAssets;
 use App\Models\VectorCategory;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class VectorAssetsController extends Controller
@@ -16,14 +18,15 @@ class VectorAssetsController extends Controller
      */
     public function index()
     {
-        // Ambil data kategori vector dengan pagination
+        // Ambil data vector assets dengan relasi vectorCategories
         $vectorAssets = VectorAssets::with('vectorCategory')->paginate(10);
 
-        // Ambil data product categories jika diperlukan
+        // Ambil data product categories
         $vectorCategories = VectorCategory::all();
+
         return Inertia::render('Backend/Product/Vector/Assets/Index', [
             'vectorAssets' => $vectorAssets,
-            'vectorCategories' => $vectorCategories, // Kirim ke frontend
+            'vectorCategories' => $vectorCategories,
         ]);
     }
 
@@ -47,12 +50,28 @@ class VectorAssetsController extends Controller
     public function store(StoreVectorAssetsRequest $request)
     {
         $data = $request->validated();
-
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
 
+        if ($request->hasFile('file')) {
+            $data['file'] = $request->file('file')->store('vector_assets', 'public');
+        }
 
-        VectorAssets::create($data);
+        $vectorAsset = VectorAssets::create($data);
+
+        $vectorAsset->vectorCategory()->attach($request->input('vector_category_id'));
+
+        return redirect()->route('vector-assets.index')
+            ->with('success', 'Vector asset created successfully.');
+    }
+
+    public function show($id)
+    {
+        // Cari asset berdasarkan ID
+        $vectorAsset = VectorAssets::findOrFail($id);
+
+        // Return view dengan data asset
+        return view('vector-assets.show', compact('vectorAsset'));
     }
 
     /**
@@ -60,9 +79,10 @@ class VectorAssetsController extends Controller
      */
     public function edit(VectorAssets $vectorAsset)
     {
-        return Inertia::render('Backend/Vector/Assets/Edit', [
+        $vectorCategories = VectorCategory::all();
+        return Inertia::render('Backend/Product/Vector/Assets/Partials/Edit', [
             'vectorAsset' => $vectorAsset,
-            'vectorCategories' => VectorCategory::all()
+            'vectorCategories' => $vectorCategories,
         ]);
     }
 
@@ -72,12 +92,22 @@ class VectorAssetsController extends Controller
     public function update(UpdateVectorAssetsRequest $request, VectorAssets $vectorAsset)
     {
         $data = $request->validated();
+
+        // Simpan file jika ada
+        if ($request->hasFile('file')) {
+            $data['file'] = $request->file('file')->store('vector_assets', 'public');
+        }
+
         $data['updated_by'] = Auth::id();
 
+        // Update data vector asset
         $vectorAsset->update($data);
 
-        return redirect()->route('vectorAssets.index')
-            ->with('success', "Vector Asset \"$vectorAsset->name\" updated successfully");
+        // Sinkronisasi kategori
+        $vectorAsset->vectorCategory()->sync($request->input('vector_category_id'));
+
+        return redirect()->route('vector-assets.index')
+            ->with('success', "Vector asset \"$vectorAsset->name\" berhasil diperbarui!");
     }
 
     /**

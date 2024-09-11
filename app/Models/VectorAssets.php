@@ -4,23 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class VectorAssets extends Model
 {
     use HasFactory;
 
     protected $table = 'vector_assets'; // Nama tabel di database
+
     protected $fillable = [
         'name',
         'description',
-        'vector_category_id', // Pastikan sesuai dengan migrasi
+        'price',
         'file',
-        'price', // Menambahkan 'price' untuk sesuai dengan schema
         'status',
     ];
 
+
+
+    // Definisi relasi banyak ke banyak dengan VectorCategory
+    /**
+     * The categories that belong to the vector asset.
+     */
     public function vectorCategory()
     {
-        return $this->belongsTo(VectorCategory::class, 'vector_category_id'); // Pastikan nama foreign key sesuai
+        return $this->belongsToMany(VectorCategory::class, 'vector_assets_category', 'vector_assets_id', 'vector_category_id');
     }
 }

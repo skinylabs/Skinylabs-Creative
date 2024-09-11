@@ -2,6 +2,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Head, Link, useForm } from "@inertiajs/react";
+import AdminHeader from "@/Components/Backend/AdminHeader";
 
 interface VectorCategory {
     id: number;
@@ -13,7 +15,7 @@ interface CreatePageProps {
 }
 
 export default function CreatePage({ vectorCategories }: CreatePageProps) {
-    const [data, setData] = useState({
+    const { data, setData, post, reset, errors, processing } = useForm({
         name: "",
         description: "",
         vector_category_id: [] as number[], // Storing selected categories
@@ -22,6 +24,7 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
         status: false, // Boolean for status
     });
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState<
         VectorCategory[]
     >([]);
@@ -36,6 +39,7 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
                 vector_category_id: [...data.vector_category_id, category.id],
             });
         }
+        setIsDropdownOpen(false); // Close dropdown after selection
     };
 
     const handleCategoryRemove = (categoryId: number) => {
@@ -52,13 +56,61 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
 
     const submitVectorAssets = (e: React.FormEvent) => {
         e.preventDefault();
-        // Call API to save the data
-        toast.success("Vector Assets successfully created!");
+
+        // Create FormData object
+        const formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("description", data.description);
+        formData.append("price", data.price);
+        formData.append("status", data.status ? "1" : "0");
+        if (data.file) {
+            formData.append("file", data.file);
+        }
+        // Append categories
+        data.vector_category_id.forEach((id) =>
+            formData.append("vector_category_id[]", id.toString())
+        );
+
+        post(route("vector-assets.store"), {
+            data: formData,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+            onSuccess: () => {
+                toast.success("Vector assets successfully created!");
+                reset();
+                setSelectedCategories([]);
+            },
+            onError: (errors) => {
+                console.error("Error creating vector asset:", errors);
+                toast.warning(
+                    "Failed to create vector asset. Check the console for more details."
+                );
+            },
+        });
     };
+
+    const BreadcrumbItem = [
+        { label: "Vector", href: "/vector-assets/" },
+        { label: "Assets" },
+    ];
 
     return (
         <AdminLayout>
-            <h2>Create Vector Asset</h2>
+            <Head title="Create Vector Assets" />
+            <div className="flex justify-between items-center">
+                <AdminHeader
+                    items={BreadcrumbItem}
+                    title="Create Vector Assets"
+                />
+                <Link
+                    href="/vector-assets"
+                    className={buttonVariants({ variant: "destructive" })}
+                >
+                    Back
+                </Link>
+            </div>
+
             <form onSubmit={submitVectorAssets} className="pt-4">
                 <div>
                     <label htmlFor="name">Name</label>
@@ -72,6 +124,11 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
                         className="mt-1 block w-full"
                         required
                     />
+                    {errors.name && (
+                        <p className="text-red-500 text-xs mt-1">
+                            {errors.name}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-4">
@@ -86,38 +143,48 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
                         className="mt-1 block w-full"
                         required
                     />
+                    {errors.description && (
+                        <p className="text-red-500 text-xs mt-1">
+                            {errors.description}
+                        </p>
+                    )}
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 relative">
                     <label htmlFor="vector_category_id">Vector Category</label>
-                    <select
-                        id="vector_category_id"
-                        value=""
-                        onChange={(e) => {
-                            const selectedCategory = vectorCategories.find(
-                                (category) =>
-                                    category.id === Number(e.target.value)
-                            );
-                            if (selectedCategory)
-                                handleCategorySelect(selectedCategory);
-                        }}
-                        className="block w-full mt-1"
+                    <button
+                        type="button"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="block w-full mt-1 border border-gray-300 rounded p-2 text-left"
                     >
-                        <option value="" disabled>
-                            Select a category
-                        </option>
-                        {vectorCategories.map((category) => (
-                            <option
-                                key={category.id}
-                                value={category.id}
-                                disabled={selectedCategories.some(
-                                    (selected) => selected.id === category.id
-                                )}
-                            >
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
+                        {selectedCategories.length > 0
+                            ? selectedCategories.map((c) => c.name).join(", ")
+                            : "Select categories"}
+                    </button>
+                    {isDropdownOpen && (
+                        <div className="absolute left-0 mt-2 w-full border border-gray-300 bg-white z-10">
+                            <div className="max-h-60 overflow-y-auto">
+                                {vectorCategories.map((category) => (
+                                    <div
+                                        key={category.id}
+                                        className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                                            selectedCategories.some(
+                                                (selected) =>
+                                                    selected.id === category.id
+                                            )
+                                                ? "bg-gray-200"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            handleCategorySelect(category)
+                                        }
+                                    >
+                                        {category.name}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-4">
@@ -155,6 +222,11 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
                         className="mt-1 block w-full"
                         required
                     />
+                    {errors.price && (
+                        <p className="text-red-500 text-xs mt-1">
+                            {errors.price}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-4">
@@ -170,6 +242,11 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
                         className="mt-1 block w-full"
                         required
                     />
+                    {errors.file && (
+                        <p className="text-red-500 text-xs mt-1">
+                            {errors.file}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-4">
@@ -188,6 +265,7 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
                     <Button
                         type="submit"
                         className={buttonVariants({ variant: "default" })}
+                        disabled={processing}
                     >
                         Submit
                     </Button>

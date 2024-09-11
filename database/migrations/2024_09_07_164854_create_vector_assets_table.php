@@ -15,12 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name'); // Nama aset
             $table->text('description'); // Deskripsi aset
-            $table->foreignId('vector_category_id') // Relasi dengan tabel vector_categories
-                ->constrained('vector_categories')
-                ->onDelete('cascade');
+
             $table->string('file'); // Path file vector
             $table->decimal('price', 10, 2); // Harga aset
-            $table->enum('status', ['active', 'inactive'])->default('active'); // Status aktif atau tidak
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

@@ -24,9 +24,10 @@ class StoreVectorAssetsRequest extends FormRequest
         return [
             'name' => ['required', 'max:255'],
             'description' => ['required', 'max:1000'],
-            'vector_category_id' => ['required', 'exists:vector_categories,id'],
+            'vector_category_id' => ['required', 'array'],
             'file' => ['required', 'file', 'mimes:svg,png,jpg,jpeg', 'max:2048'],
-            'status' => ['required', 'in:active,inactive'],
+            'price' => ['required', 'numeric'],
+            'status' => ['boolean'],
         ];
     }
 }

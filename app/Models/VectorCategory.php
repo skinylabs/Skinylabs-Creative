@@ -14,13 +14,15 @@ class VectorCategory extends Model
         'product_category_id',
     ];
 
-    // Relasi Many to One dengan Category
+    // Relasi Many to One dengan ProductCategory
     public function productCategory()
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
+
+    // Definisi relasi banyak ke banyak dengan VectorAssets
     public function vectorAssets()
     {
-        return $this->hasMany(VectorAssets::class);
+        return $this->belongsToMany(VectorAssets::class, 'vector_assets_category', 'vector_category_id', 'vector_assets_id');
     }
 }

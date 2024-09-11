@@ -24,9 +24,10 @@ class UpdateVectorAssetsRequest extends FormRequest
         return [
             'name' => ['required', 'max:255'],
             'description' => ['required', 'max:1000'],
-            'category_id' => ['required', 'exists:vector_categories,id'],
-            'file' => ['nullable', 'file', 'mimes:svg,png,jpg,jpeg', 'max:2048'], // opsional jika tidak mengubah file
-            'status' => ['required', 'in:active,inactive'],
+            'vector_category_id' => ['required', 'array'],
+            'file' => ['required', 'file', 'mimes:svg,png,jpg,jpeg', 'max:2048'],
+            'price' => ['required', 'numeric'],
+            'status' => ['boolean'],
         ];
     }
 }
