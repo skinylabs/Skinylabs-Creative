@@ -21,7 +21,7 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
         vector_category_id: [] as number[], // Storing selected categories
         price: "",
         file: null as File | null,
-        status: false, // Boolean for status
+        status: "draft",
     });
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -62,7 +62,7 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
         formData.append("name", data.name);
         formData.append("description", data.description);
         formData.append("price", data.price);
-        formData.append("status", data.status ? "1" : "0");
+        formData.append("status", data.status ? "draft" : "published");
         if (data.file) {
             formData.append("file", data.file);
         }
@@ -251,14 +251,22 @@ export default function CreatePage({ vectorCategories }: CreatePageProps) {
 
                 <div className="mt-4">
                     <label htmlFor="status">Status</label>
-                    <input
-                        type="checkbox"
-                        checked={data.status}
+                    <select
+                        id="status"
+                        value={data.status}
                         onChange={(e) =>
-                            setData({ ...data, status: e.target.checked })
+                            setData({ ...data, status: e.target.value })
                         }
-                        className="ml-2"
-                    />
+                        className="mt-1 block w-full"
+                    >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                    {errors.status && (
+                        <p className="text-red-500 text-xs mt-1">
+                            {errors.status}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-6 flex justify-end">

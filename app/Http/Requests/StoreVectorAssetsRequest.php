@@ -22,12 +22,12 @@ class StoreVectorAssetsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'max:255'],
-            'description' => ['required', 'max:1000'],
-            'vector_category_id' => ['required', 'array'],
-            'file' => ['required', 'file', 'mimes:svg,png,jpg,jpeg', 'max:2048'],
-            'price' => ['required', 'numeric'],
-            'status' => ['boolean'],
+            "name" => ['required', 'max:255'],
+            "description" => ['required'],
+            "price" => ['required', 'numeric'],
+            "file" => ['required', 'file'],
+            "status" => ['required', 'in:draft,published'],
+            "vector_category_id" => ['required', 'array'],
         ];
     }
 }

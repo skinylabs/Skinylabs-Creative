@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('vector_assets', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nama aset
-            $table->text('description'); // Deskripsi aset
-
-            $table->string('file'); // Path file vector
-            $table->decimal('price', 10, 2); // Harga aset
-            $table->boolean('status')->default(true);
+            $table->string('name');
+            $table->text('description');
+            $table->string('file');
+            $table->decimal('price', 10, 2);
+            $table->string('status')->default('draft');
             $table->timestamps();
         });
     }
